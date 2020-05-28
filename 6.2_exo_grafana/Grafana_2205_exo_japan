@@ -1,0 +1,61 @@
+# EXO GRAFANA 
+
+## CREATION DE LA BDD :
+
+### MODIFICATION DE LA BDD :
+
+ALTER TABLE nom_table
+MODIFY nom_colonne type_donnees
+
+create table japan (
+    time datetime,
+    latitude float8,
+    longitude float8,
+    depth float8,
+    mag float4,
+    magtype varchar(20),
+    nst varchar(30),
+    gap float8,
+    dmin float8,
+    rms float4,
+    net varchar(20),
+    id  varchar(30),
+    updated datetime,
+    place varchar(250),
+    type varchar(50), 
+    horizontalError float4,
+    depthError float4,
+    magError float8,
+    magNst float8,
+    status  varchar(20), 
+    locationSource varchar(20),
+    magSource varchar(20)
+    )
+
+### MODIFICATION DES DONNEES :
+
+import pandas as pd
+from sqlalchemy import create_engine 
+#import time
+import pymysql
+
+engine = create_engine("mysql+pymysql://ines@localhost/test")
+
+
+#Importer la table "japan"
+
+
+col_japan=['time','latitude','longitude','depth','mag','magType','nst','gap','dmin','rms','net','id','updated','place','type','horizontalError','depthError','magError','magNst','status','locationSource','magSource']
+def chargement(col_japan, path, table):
+    col_japan=['time','latitude','longitude','depth','mag','magType','nst','gap','dmin','rms','net','id','updated','place','type','horizontalError','depthError','magError','magNst','status','locationSource','magSource']
+    df = pd.read_csv(path, skiprows=[0], header= None, names=col_japan)
+    df.time = [each.replace('T', ' ') for each in df.time]
+    df.time = [each.replace('Z', '') for each in df.time]
+    df.updated = [each.replace('T', ' ') for each in df.updated]
+    df.updated = [each.replace('Z', '') for each in df.updated]
+    df.to_sql(table, con=engine, if_exists='append', index=False)
+    return (print('chargement', table, 'Terminé'))
+
+## INTEGRATION DES DONNEES DANS LA BDD :
+
+chargement(col_japan, "/Users/dines/OneDrive/Documents/japan.csv", "japan" )

@@ -1,0 +1,3 @@
+-- CREATION DE LA BASE DE DONNEES "japon"
+CREATE DATABASE japon ;
+USE japon ;
